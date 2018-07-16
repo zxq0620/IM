@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.net.server.dao.FriendDao">
+
+    <select id="getFriends" parameterType="java.lang.Integer"
+            resultType="user">
+	SELECT
+	`user`.`userid` AS `userid`,
+	`user`.`username` AS `username`,
+	`user`.`sex` AS `sex`
+FROM
+	`user`
+WHERE
+	`user`.`userid` IN (
+		SELECT
+			`friend`.`friendid`
+		FROM
+			`friend`
+		WHERE
+			(`friend`.`userid` = #{userid})
+	)
+	</select>
+</mapper>
