@@ -1,36 +1,43 @@
 package com.im.net.client;
 
-import io.netty.buffer.ByteBuf;
+import com.im.net.client.util.ClientUtil;
+import com.im.net.server.handler.AbstractHandler;
+import com.im.net.server.protobuf.MessageOuterClass;
+import com.im.net.server.util.GetApplicationContext;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
-import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.springframework.context.ApplicationContext;
 
-import java.io.UnsupportedEncodingException;
-
-public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ctx.writeAndFlush(Unpooled.copyInt(1001));
-        ctx.writeAndFlush(Unpooled.copyInt(12345));
-        //ctx.writeAndFlush(Unpooled.copyInt("12345".length()));
-        //ctx.writeAndFlush(Unpooled.copiedBuffer("12345".getBytes()));
+        ClientUtil.channel = ctx.channel();
+        MessageOuterClass.ReqFriends.Builder builder = MessageOuterClass.ReqFriends.newBuilder();
+        builder.setUserid(12345);
+        MessageOuterClass.Message message = MessageOuterClass.Message.newBuilder()
+                .setMsgtype(1001)
+                .setReqfriends(builder)
+                .build();
+        ctx.writeAndFlush(message);
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
-
-        in.readInt();
-        byte[] content = new byte[in.readInt()];
-        in.readBytes(content);
-        try {
-            System.out.println(new String(content,"UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        MessageOuterClass.Message message = (MessageOuterClass.Message) msg;
+        if (message.getMsgtype()!=0){
+            ApplicationContext context = GetApplicationContext.getInstance();
+            String handlertype = "RecieveMsg"+((MessageOuterClass.Message) msg).getMsgtype();
+            AbstractHandler handler = (AbstractHandler) context.getBean(handlertype);
+            //handler.handle(ctx.channel(),message);
         }
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override

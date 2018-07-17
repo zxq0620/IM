@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+
+/*顶层消息*/
+message Message{
+     int32 msgtype = 1;//消息头
+     ReqLogin reqlogin = 2;
+     ResLogin reslogin = 3;
+     ReqFriends reqfriends = 4;
+     ResFriends resfriends = 5;
+     ChatWith chat_with = 6;
+}
+
+message ReqLogin{
+     int32 userid = 1;
+     string password = 2;
+}
+
+message ResLogin{
+     string status = 1;
+     int32 userid = 2;
+     string username = 3;
+     string sex = 4;
+}
+
+message ReqFriends{
+    int32 userid = 1;
+}
+
+message ResFriends{
+    int32 userid = 1;
+    string username = 2;
+    string sex = 4;
+    string img = 5;
+}
+
+message ChatWith{
+    int32 userid = 1;
+    int32 userport = 2;
+    int32 friendid = 3;
+}

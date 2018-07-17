@@ -1,6 +1,5 @@
 package com.im.net.server.handler;
 
-import com.im.net.server.Message.AbstractMessage;
 import com.im.net.server.util.GetApplicationContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,9 +15,9 @@ public class MessageDecode extends ByteToMessageDecoder {
         String msgClass = "RecieveMsg"+msgType;
         ApplicationContext context = GetApplicationContext.getInstance();
         if(context.containsBean(msgClass)) {
-            AbstractMessage message = (AbstractMessage) context.getBean(msgClass);
-            message.readBody(byteBuf);
-            list.add(message);
+            //AbstractMessage message = (AbstractMessage) context.getBean(msgClass);
+            //message.readBody(byteBuf);
+            //list.add(message);
         }else{
             list.add(null);
         }
