@@ -6,7 +6,7 @@
  mybatis--数据持久化
  
 项目关键点：
-1 .protobuf技术的引进，大大简化了通信协议的协调。没有引入protobuf前，想要协调好CS的通信协议比较麻烦，要手动写的代码量比较大，
+1 .protobuf技术的引进，简化了通信协议的协调。没有引入protobuf前，想要协调好CS的通信协议比较麻烦，要手动写的代码量比较大，
    还容易出错，下面是项目的.proto文件的一部分，message=消息头msgtype+可选的消息体
    syntax = "proto3";
 
